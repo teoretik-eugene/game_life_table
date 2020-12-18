@@ -308,8 +308,8 @@
             }
 
                     while(quantity>0){
-                        let a=Math.floor(Math.random() * (row-1) + 0);  //Рандомная строчка
-                        let b=Math.floor(Math.random() * (col-1) + 0);  // Рандомный столбец
+                        let a=Math.floor(Math.random() * (row) + 0);  //Рандомная строчка
+                        let b=Math.floor(Math.random() * (col) + 0);  // Рандомный столбец
                         if(table[a][b]==true){                          // Если такой "рандомный элемент" уже был, то цикл считает еще раз,...
                             quantity++;
                         }
