@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>резервная_"Жизнь"</title>
+        <title>Zhizn</title>
         <meta charset="UTF-8">
         <style>
             .input1{
@@ -20,11 +20,11 @@
                 border: 0.5px solid black ;  height: 10px; width: 10px;
             }
             .start_button{
-                background-color: #c23616;
+                background-color: #44bd32;
                 color: #f5f6fa;
             }
             .stop_button{
-                background-color: #fbc531;
+                background-color: #EA2027;
                 color: #f5f6fa;
             }
             .quantity{
@@ -40,7 +40,7 @@
         </style>
     </head>
     <body>
-        <h1 style="text-align: center;">Игра "жизнь"</h1>
+        <h1 style="text-align: center;">Игра "Жизнь"</h1>
         <!--Важно вбить стиль таблицы table и стиль для td "unchecked", иначе она не отобразится -->
         <span>Введите количество рядов и столбцов:</span>
         <h6>Рекомендованные значения: 50X50 // 100X100 или любые квадратные значения</h6>
@@ -48,23 +48,25 @@
         <form name="board">
             <!--Это "форма заполнения"-->
             <input class="input1" type="text" name="row" value="50" placeholder="размер по Оx/строки">
-            <span style="left: 200px; position: relative;">Ввести количсетво живых клеток для случайной генерации:</span>
+            <span style="left: 200px; position: relative;">Введите количсетво живых клеток для случайной генерации:</span>
             <input class="input1 quantity" type="text" name="quantity" placeholder="Количетсво живых клеток" value="">  
             <br><br>
             <input class="input1" type="text" name="col" value="50" placeholder="размер по Оy/столбцы">            <!--Нужно убрать из value значение "50"-->          
             <br><br>
             <input type="button" id="btn1" value="Построить поле">
             <input type="button" id="random" value="Рандомизировать">
-            <input type="button" id="shag" value="Шаг">
+            <input type="button" id="shag" value="Пошаговый запуск">
             <input type="button" class="start_button" id="start" value="Запустить">
             <input type="button" class="stop_button" id="stop" value="Остановить">
             <br><br>
             <input type="button" id="clean" value="Очистить поле">
             <span class="name">by Поляков Евгений</span>
+            <br>
+            <span>Version 2.0</span>
             <br><br><br>
         </form>
         <script>
-            var quantity = 0;                   // Количество живых клеток 
+            var quantity = 0;                   // Количество живых клеток
             var timer;                          // Переменная для получения id setInterval, служит для останавливания игры
 // Сделаем условные обозначения: "координата клетки" - представляем игровое поле как матрицу и коориданата - это элемент матрицы(т.е. строчка-столбец)
 
@@ -93,7 +95,7 @@
                     let od = event.target.id;
                     var n; var m; var str;
 
-                    str=od.split(' ');
+                    str=od.split(' ');                                  // Разделяем id, пробел в id нужен для упрощения разделения
                     n=str[0];
                     m=str[1];
 
@@ -120,7 +122,7 @@
             function createGameBoard(parentElem,row,col){  //Функция по созданию игрового поля, реализованная через таблицу
                 
                 parentElem = parentElem || document.body; //                    !
-                col = parseInt(row1.value) || 10;
+                col = parseInt(row1.value) || 10;                       //Везде row  и col являются строками и столбцами соответственно 
                 row = parseInt(col1.value) || 10;
 
                 
@@ -142,7 +144,7 @@
                         new_table[i][j]=false;                      // Второй массив который мы просто заполняем
 
                         td.id=(String(i) +" "+ String(j));           // Присваиваем id каждому элементу таблицы и получается, что как будто матрица
-
+                                                                    
                         td.className="unchecked";           //обязательно нужно присвоить td класс
 
                         tr.appendChild(td);                 // Эти appendChild определяют положения, обязательны
@@ -171,12 +173,13 @@
             function life(){                          // Функция по реализации "Жизни"
                 row=parseInt(row1.value);                   // Вспоминаем наши введенные строчки и столбцы и присваиваем их в row и col соответственно 
                 col=parseInt(col1.value);
+                // Важно понимать, что row - количество столбцов, а row-1 - номер последней строчки. Аналогично с col
 
                 for(let i=0; i<row; i++){                       // Цикл для присванивания во второй массив "первоначальной" жизни
 
                     for (let j=0; j<col; j++){
 
-                        new_table[i][j]=table[i][j];            // Запишем в новый массив значения "динамичного массива"
+                        new_table[i][j]=table[i][j];            // Запишем в новый массив значения "введенного" массива(в котором мы пометили закрашенные клетки)
                     }
                 }
                                                
@@ -185,9 +188,10 @@
 
                     for(let j=0; j<col; j++){
                         let neighbor = 0;               // Счетчик соседей
-                        // Ниже проверяем закрашенных соседей
+                    
                         //Подъехала основная функция этой игры
-                        if((i-1)>=0 && (i+1)<row-1){                           // Ошибка со строчкой // Строго меньше row-1!!! Будет другой случай еще
+
+                        if((i-1)>=0 && (i+1)<=row-1){                         // Ошибка также была в том, что должно было быть <=row-1, а было строго меньше. Поэтому и выполнялись ошибки
                         // Дело в том, что если функция рассматривает строчку "-1" в цикле, т.е. i=0 - 1, то программа выдает ошибку и перестает работать.
                         // Для ее предотвращения я рассматриваю строки в интервале от 1 до предпоследней строчки, нулевую строчку и последнюю строчку.
 
@@ -206,11 +210,11 @@
                             if(table[i+1][j-1]==undefined){if(table[i+1][col-1]==true){neighbor=neighbor+1;};};
                             if(table[i+1][j]==true){neighbor=neighbor+1;};
                             if(table[i+1][j+1]==true){neighbor=neighbor+1;};
-                            if(table[i+1][j+1]==undefined){if(table[i+1][col-1]==true){neighbor=neighbor+1;};};
+                            if(table[i+1][j+1]==undefined){if(table[i+1][0]==true){neighbor=neighbor+1;};};
                         }
                         if((i==0)){                     // Крайние строки являются исключениями, их надо проеврить отдельно, чтобы не появлялась ошибка при запуске функции                                               
                             //Случай, когда нулевая строка:
-                           if(table[row-1][j-1]==true){neighbor=neighbor+1;};
+                           if(table[row-1][j-1]==true){neighbor=neighbor+1;};           //row-1 - номер последней строки
                            if(table[row-1][j-1]==undefined){if(table[row-1][col-1]==true){neighbor=neighbor+1;};};
                            if(table[row-1][j]==true){neighbor=neighbor+1;};
                            if(table[row-1][j+1]==true){neighbor=neighbor+1;};
@@ -220,11 +224,11 @@
                            if(table[i][j+1]==true){neighbor=neighbor+1;};
                            if(table[i][j+1]==undefined){if(table[i][0]==true){neighbor=neighbor+1;};};
                            if(table[i+1][j-1]==true){neighbor=neighbor+1;};
-                           if(table[i+1][j-1]==undefined){if(table[i+1][col-1]){neighbor=neighbor+1;};};
+                           if(table[i+1][j-1]==undefined){if(table[i+1][col-1]==true){neighbor=neighbor+1;};}; //забыл написать тут true
                            if(table[i+1][j]==true){neighbor=neighbor+1;};
                            if(table[i+1][j+1]==true){neighbor=neighbor+1;};
-                           if(table[i+1][j+1]==undefined){if(table[i+1][0]==true){neighbor=neighbor+1;};};
-                        }
+                           if(table[i+1][j+1]==undefined){if(table[i+1][0]==true){neighbor=neighbor+1;};};          // Ошибка была здесь. Вместо 0 написал j+1, поэтому не получался тор
+                        }                                                                                             // точнее, получался не до конца 
                         // Случай, когда последняя строка:
                         if(i==row-1){
 
@@ -233,10 +237,10 @@
                             if(table[0][j]==true){neighbor=neighbor+1;};
                             if(table[0][j+1]==true){neighbor=neighbor+1;};
                             if(table[0][j+1]==undefined){if(table[0][0]==true){neighbor=neighbor+1;};};
-                            if(table[i][j-1]==true){neighbor=neighbor+1;};
-                            if(table[i][j-1]==undefined){if(table[i][col-1]==true){neighbor=neighbor+1;};};
-                            if(table[i][j+1]==true){neighbor=neighbor+1;};
-                            if(table[i][j+1]==undefined){if(table[i][0]==true){neighbor=neighbor+1;};};
+                            if(table[i][j-1]==true){neighbor=neighbor+1;};                                                 // Конечно, тут много if-ов, но они служат для наглядности
+                            if(table[i][j-1]==undefined){if(table[i][col-1]==true){neighbor=neighbor+1;};};                 // каждая строчка показывает какую клетку рассматриваем
+                            if(table[i][j+1]==true){neighbor=neighbor+1;};                                          
+                            if(table[i][j+1]==undefined){if(table[i][0]==true){neighbor=neighbor+1;};}; 
                             if(table[i-1][j-1]==true){neighbor=neighbor+1;};    //
                             if(table[i-1][j-1]==undefined){if(table[i-1][col-1]==true){neighbor=neighbor+1;};};
                             if(table[i-1][j]==true){neighbor=neighbor+1;};
@@ -246,18 +250,19 @@
                         }
 
                         // Анализ соседей:
-
-                        if(neighbor>3){new_table[i][j]=false;};              // Если у клетки больше 3-ех соседей, то она умирает. Зписываем это в новый массив,т.к. если
+                        //if(i==4 && j==0){alert(neighbor);};           //так я проверял кол-во соседей, методом тыка по какому-то элементу
+                        if(neighbor>3 && table[i][j]==true){new_table[i][j]=false;};//.              // Если у клетки больше 3-ех соседей, то она умирает. Зписываем это в новый массив,т.к. если
                     // записать в старом, то это вызовет ошибку в правилах
-                        if(neighbor<2){new_table[i][j]=false;};                 // Если у клетки меньше двух соседей, то умирает от одиночества
+                        if(neighbor<2 && table[i][j]==true){new_table[i][j]=false;};                 // Если у клетки меньше двух соседей, то умирает от одиночества
                         if(neighbor==3 && table[i][j]==false){new_table[i][j]=true;};                 // Если у клетки ровно 3 соседа, то клетка "становится живой"
+                        if((neighbor==3 || neighbor==2) && table[i][j]==true){new_table[i][j]=true}//тут
                     }   
                 }
                     // Отрисовка поля
                 for(let i=0; i<row; i++){
                     for(let j=0; j<col; j++){
                         if(new_table[i][j]==true){
-                            let td_check = document.getElementById(String(i)+" "+String(j));
+                            let td_check = document.getElementById(String(i)+" "+String(j));        //Опять составляем id путем превращения цифр в строки
                             td_check.classList.remove("unchecked");
                             td_check.classList.add("checked");
                         }
@@ -349,6 +354,7 @@
                         td_check.classList.add("unchecked");
                     }
                 }
+                clearTimeout(timer);            // Когда очищаем поле, то игра останавливается 
             }
         
         </script>
