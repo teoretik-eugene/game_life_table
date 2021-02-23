@@ -274,7 +274,7 @@
                         // Дело в том, что если функция рассматривает строчку "-1" в цикле, т.е. i=0 - 1, то программа выдает ошибку и перестает работать.
                         // Для ее предотвращения я рассматриваю строки в интервале от 1 до предпоследней строчки, нулевую строчку и последнюю строчку.
 
-                            //Случай, когда рассматриваемая строка ни нулевая и ни последняя:
+                            //Случай, когда рассматриваемая строка не нулевая и не последняя:
                             if(table[i-1][j-1]==true){neighbor=neighbor+1;};
                             if(table[i-1][j-1]==undefined){if(table[i-1][col-1]==true){neighbor=neighbor+1;};};
                             if(table[i-1][j]==true){neighbor=neighbor+1};
@@ -320,7 +320,7 @@
                             if(table[i][j-1]==undefined){if(table[i][col-1]==true){neighbor=neighbor+1;};};                 // каждая строчка показывает какую клетку рассматриваем
                             if(table[i][j+1]==true){neighbor=neighbor+1;};                                          
                             if(table[i][j+1]==undefined){if(table[i][0]==true){neighbor=neighbor+1;};}; 
-                            if(table[i-1][j-1]==true){neighbor=neighbor+1;};    //
+                            if(table[i-1][j-1]==true){neighbor=neighbor+1;};    
                             if(table[i-1][j-1]==undefined){if(table[i-1][col-1]==true){neighbor=neighbor+1;};};
                             if(table[i-1][j]==true){neighbor=neighbor+1;};
                             if(table[i-1][j+1]==true){neighbor=neighbor+1;};
@@ -329,15 +329,14 @@
                         }
 
                         // Анализ соседей:
-                        //if(i==4 && j==0){alert(neighbor);};           //так я проверял кол-во соседей, методом тыка по какому-то элементу
                         if(neighbor>3 && table[i][j]==true){new_table[i][j]=false;};//.              // Если у клетки больше 3-ех соседей, то она умирает. Зписываем это в новый массив,т.к. если
-                    // записать в старом, то это вызовет ошибку в правилах
+                    											// записать в старом, то это вызовет ошибку в правилах
                         if(neighbor<2 && table[i][j]==true){new_table[i][j]=false;};                 // Если у клетки меньше двух соседей, то умирает от одиночества
                         if(neighbor==3 && table[i][j]==false){new_table[i][j]=true;};                 // Если у клетки ровно 3 соседа, то клетка "становится живой"
                         if((neighbor==3 || neighbor==2) && table[i][j]==true){new_table[i][j]=true}//тут
                     }   
                 }
-                    // Отрисовка поля
+                    /*Отрисовка поля*/
                 for(let i=0; i<row; i++){
                     for(let j=0; j<col; j++){
                         if(new_table[i][j]==true){
@@ -359,23 +358,21 @@
                     }
                 }
             }
-
-            document.getElementById("start").onclick=start;                 // Запуск игры автоматически
+		/*Запуск игры*/
+            document.getElementById("start").onclick=start;       
 
             function start(){                       // Функция по автоматическому запуску игры
-                timer=setInterval(life,100);
-				
-                
+                timer=setInterval(life,100);    
             }
-
-            document.getElementById("stop").onclick = stop;         // Остановка игры 
+		
+		/*Остановка игры*/
+            document.getElementById("stop").onclick = stop;         
 
             function stop(){
                 clearTimeout(timer);
             }
-
-            document.getElementById("random").onclick = randomize;          // Рандомное расставление живых клеток
-            var zu;                                             // ^_^
+		/*Рандомное расставление живых клеток*/
+            document.getElementById("random").onclick = randomize; 
 
             function randomize(){                                           // Функция по рандомному расставлению
                 row = parseInt(row1.value);                                 // Стандартный перевод
@@ -395,7 +392,7 @@
                     while(quantity>0){
                         let a=Math.floor(Math.random() * (row) + 0);  //Рандомная строчка
                         let b=Math.floor(Math.random() * (col) + 0);  // Рандомный столбец
-                        if(table[a][b]==true){                          // Если такой "рандомный элемент" уже был, то цикл считает еще раз,...
+                        if(table[a][b]==true){                          // Если такой рандомный элемент уже был, то цикл считает еще раз,...
                             quantity++;
                         }
                         else{
@@ -420,8 +417,8 @@
                         }
                     }
                 }
-
-            document.getElementById("clean").onclick = clean;       //  Очистка поля
+		/*Очистка поля*/
+            document.getElementById("clean").onclick = clean;       
 
             function clean(){                                       // Функция для очистки поля
                 row = parseInt(row1.value);
